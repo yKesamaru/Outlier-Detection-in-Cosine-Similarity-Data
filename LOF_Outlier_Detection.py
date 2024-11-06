@@ -2,16 +2,16 @@ import argparse
 import os
 import time
 import shutil  # ファイル移動用ライブラリ
-import faiss
 import numpy as np
+from sklearn.neighbors import LocalOutlierFactor
 
 
 def main(root_dir):
     # 処理開始時刻を記録
     start_time = time.time()
 
-    # FAISSインデックスの設定
-    dimension = 512  # ベクトルの次元数
+    # ベクトルの次元数
+    dimension = 512
 
     # データ格納用のリスト
     all_model_data = []
@@ -57,7 +57,7 @@ def main(root_dir):
                     raise ValueError("ゼロノルムのベクトルが含まれています。")
 
                 # L2正規化を行う
-                faiss.normalize_L2(model_data)
+                model_data = model_data / norms[:, np.newaxis]
 
                 # 正規化後のデータの最大値・最小値を確認
                 print(f"正規化後のデータの最大値: {np.max(model_data)}, 最小値: {np.min(model_data)}")
@@ -79,53 +79,36 @@ def main(root_dir):
     # データ数を確認
     print(f"データ数: {len(all_model_data)}")
 
-    # クラスタ数をデータに基づいて調整
-    # 小規模データセットのため、IndexFlatIPを使用
-    print("IndexFlatIPを使用します。")
-    index = faiss.IndexFlatIP(dimension)
+    # LOFによる外れ値検出
+    print("LOFによる外れ値検出を行います。")
 
-    # データを追加
-    index.add(all_model_data)
+    # LOFモデルの作成
+    n_neighbors = min(20, len(all_model_data) - 1)  # データ数に応じて近傍数を設定
+    lof = LocalOutlierFactor(n_neighbors=n_neighbors, metric='cosine')
 
-    # クエリデータの外れ値検出
-    top_k = min(10, len(all_model_data))  # 近傍点数を指定
-    D, I = index.search(all_model_data, top_k)
+    # LOFスコアの計算（negative_outlier_factor_属性を取得）
+    y_pred = lof.fit_predict(all_model_data)
+    lof_scores = -lof.negative_outlier_factor_
 
-    # 類似度行列 D の値を確認
-    print(f"D の最大値: {np.max(D)}, 最小値: {np.min(D)}")
+    # LOFスコアの最大値・最小値を確認
+    print(f"LOFスコアの最大値: {np.max(lof_scores)}, 最小値: {np.min(lof_scores)}")
 
-    # D に異常値が含まれていないかチェック
-    if np.isnan(D).any() or np.isinf(D).any():
-        raise ValueError("類似度行列 D に NaN または無限大の値が含まれています。")
-
-    # D の値を [-1, 1] の範囲にクリッピング
-    D = np.clip(D, -1.0, 1.0)
-
-    # 外れ値を判定する閾値を設定（例：コサイン類似度が0.3未満を外れ値とする）
-    outlier_threshold = 0.5
+    # 外れ値を判定する閾値を設定（例：LOFスコアが1.5以上を外れ値とする）
+    outlier_threshold = 1.5
 
     # 外れ値のリスト
     outliers = []
 
     # 各データ点について外れ値かどうかを判定
-    for idx in range(len(I)):
-        # 近傍点の類似度の平均を計算（自分自身を除く）
-        similarities = D[idx][1:]
-        # 有効な類似度のみを使用
-        valid_similarities = similarities[(similarities >= -1.0) & (similarities <= 1.0)]
-        if len(valid_similarities) == 0:
-            print(f"データインデックス {idx} の有効な類似度がありません。")
-            continue
-        avg_similarity = np.mean(valid_similarities)
-        # 平均類似度の値を確認
-        print(f"データインデックス {idx} の平均類似度: {avg_similarity}")
-        # 類似度が閾値を下回る場合は外れ値として記録
-        if avg_similarity < outlier_threshold:
+    for idx, score in enumerate(lof_scores):
+        # LOFスコアが閾値を超える場合は外れ値として記録
+        if score > outlier_threshold:
             outliers.append({
                 "名前": all_name_list[idx],
                 "ディレクトリ": all_dir_list[idx],
-                "平均類似度": avg_similarity
+                "LOFスコア": score
             })
+            print(f"外れ値検出: 名前: {all_name_list[idx]}, ディレクトリ: {all_dir_list[idx]}, LOFスコア: {score:.4f}")
 
     # 外れ値ファイルを保存するディレクトリを作成（同名のディレクトリがない場合のみ）
     outlier_dir = os.path.join(root_dir, "外れ値ファイル")
@@ -137,10 +120,8 @@ def main(root_dir):
     if os.path.exists(npz_file_path):
         os.remove(npz_file_path)
 
-    # 外れ値を出力および移動
+    # 外れ値を移動
     for outlier in outliers:
-        print(f"外れ値検出: 名前: {outlier['名前']}, ディレクトリ: {outlier['ディレクトリ']}, 平均類似度: {outlier['平均類似度']:.4f}")
-
         # 外れ値ファイルのパスを生成
         src_path = os.path.join(outlier["ディレクトリ"], outlier["名前"])
         dst_path = os.path.join(outlier_dir, outlier["名前"])
@@ -156,7 +137,7 @@ def main(root_dir):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="FAISSによる外れ値検出")
+    parser = argparse.ArgumentParser(description="LOFによる外れ値検出")
     parser.add_argument("root_dir", type=str, help="データのルートディレクトリのパスを指定してください")
     args = parser.parse_args()
     main(args.root_dir)

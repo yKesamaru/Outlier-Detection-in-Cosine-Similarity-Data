@@ -2,18 +2,33 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: Current File",
-            "type": "python",
+            "name": "Faiss",
+            "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "program": "Faiss_Outlier_Detection.py",
             "console": "integratedTerminal",
             "env": {
                 "PYTHONPATH": "/home/terms/ドキュメント/Outlier-Detection-in-Cosine-Similarity-Data/venv/bin/python"
             },
             "args": [
-                "/home/terms/ドキュメント/Outlier-Detection-in-Cosine-Similarity-Data/assets/佐藤海里"
+                // "/home/terms/ドキュメント/Outlier-Detection-in-Cosine-Similarity-Data/assets/佐藤海里",
+                "/home/terms/ドキュメント/Outlier-Detection-in-Cosine-Similarity-Data/assets/杏野なつ/"
             ]
-        }
+        },
+        {
+            "name": "LOF",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "LOF_Outlier_Detection.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "/home/terms/ドキュメント/Outlier-Detection-in-Cosine-Similarity-Data/venv/bin/python"
+            },
+            "args": [
+                // "/home/terms/ドキュメント/Outlier-Detection-in-Cosine-Similarity-Data/assets/佐藤海里",
+                "/home/terms/ドキュメント/Outlier-Detection-in-Cosine-Similarity-Data/assets/杏野なつ/"
+            ]
+        },
     ]
 }
 
