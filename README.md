@@ -20,6 +20,7 @@
     - [LOFによる外れ値ファイルの検出の結果](#lofによる外れ値ファイルの検出の結果)
     - [Faissによる外れ値ファイルの検出コード](#faissによる外れ値ファイルの検出コード)
     - [Faissによる外れ値ファイルの検出の結果](#faissによる外れ値ファイルの検出の結果)
+  - [さいごに](#さいごに)
   - [参考リンク・文献](#参考リンク文献)
 
 
@@ -89,8 +90,8 @@ $$
 \cos(\theta) = \frac{\mathbf{a} \cdot \mathbf{b}}{||\mathbf{a}|| \times ||\mathbf{b}||}
 $$
 
-- $a \cdot $b$ は、ベクトル $a$ と $b$ の**内積**です。
-- \( ||\mathbf{a}|| \) と \( ||\mathbf{b}|| \) は、それぞれのベクトルの**ノルム**（長さ）です。
+- $a \cdot b$ は、ベクトル $a$ と $b$ の**内積**です。
+- $||a||$と $||b||$は、それぞれのベクトルの**ノルム**（長さ）です。
 
 
 ### その1: ベクトルの内積の計算
@@ -108,6 +109,7 @@ $$
 $$
 ||\mathbf{a}|| = \sqrt{a_1^2 + a_2^2 + \dots + a_n^2}
 $$
+
 $$
 ||\mathbf{b}|| = \sqrt{b_1^2 + b_2^2 + \dots + b_n^2}
 $$
@@ -261,7 +263,7 @@ $$
 
 https://github.com/yKesamaru/FACE01_DEV/blob/1cab4e4ceeeea45888d4f54f6c8da1be34e46b52/example/make_npKnown_file.py#L1-L79
 
-作成された`npKnown.npz
+作成された`npKnown.npz`
 
 ![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/2024-11-05-17-01-09.png)
 
@@ -290,6 +292,10 @@ https://github.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/blob/79
 ![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/2024-11-06-16-57-58.png)
 
 https://github.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/blob/6990f02a9bc766275a841d08bda468da0bf0fbae/output.sh#L33-L279
+
+## さいごに
+この記事ではクラスに紛れ込んだ外れ値をもつ画像ファイルを検出する概念とそれぞれのコードを紹介しました。
+`LOF`と`FAISS`の実装では、ほぼ同じファイルを検出することができました。
 
 ## 参考リンク・文献
 
