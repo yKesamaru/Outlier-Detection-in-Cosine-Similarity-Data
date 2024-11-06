@@ -1,6 +1,6 @@
 # コサイン類似度データの中の外れ値をもつファイルを見つける方法
 
-![](assets/eye-catch.png)
+![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/eye-catch.png)
 
 - [コサイン類似度データの中の外れ値をもつファイルを見つける方法](#コサイン類似度データの中の外れ値をもつファイルを見つける方法)
   - [はじめに](#はじめに)
@@ -29,10 +29,9 @@
 世の中は大規模言語モデルや動画生成AIが話題の中心になっていますが、画像分類、特にオープンセット分類[^0]の需要はますます高まっています。
 [^0]: 学習データに含まれないクラスのデータも識別し、その場合には「未知のクラス」として分類するような画像分類のタスク。例えば工業製品の不良品チェックや農作物の分類、顔認証など。
 
-<figure>
-  <img src="assets/openset-big.jpg" alt="https://vast.uccs.edu/project/open-vision-nsf/">
-  <figcaption>引用：Open Vision (NSF IIS-1320956)</figcaption>
-</figure><br />
+![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/openset-big.jpg)
+
+引用：Open Vision (NSF IIS-1320956)
 
 そのようなオープンセット分類に、例えば顔認証があります。日本人の顔認識に使う学習モデルのひとつに、拙作の`JAPANESE FACE v1`があります。日本人専用にチューニングしてありますので、[日本人の顔に対する感度が優れています](https://github.com/yKesamaru/FACE01_trained_models/tree/master)。この学習モデルはいわゆるコミュニティーライセンスですので[^1]、顔認識に使ってください。
 [^1]: 詳しくは[ライセンス](https://github.com/yKesamaru/FACE01_trained_models/blob/master/LICENSE)をご参照ください。
@@ -43,7 +42,7 @@
 
 例えばアムールヒョウのフォルダにアラビアヒョウの画像ファイルが入っていてはいけないのです。
 
-![](assets/2024-11-04-14-55-56.png)
+![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/2024-11-04-14-55-56.png)
 
 この場合（アムールヒョウのフォルダにアラビアヒョウの画像ファイルが入っている場合）で言うと、アラビアヒョウの画像ファイルが「外れ値」をもつファイルということになります。
 
@@ -67,8 +66,8 @@
 https://zenn.dev/ykesamaru/articles/4e40e0285b0b66
 
 ## 使用する顔画像データセット
-![](assets/2024-11-06-16-52-18.png)
-<!-- ![](assets/2024-11-05-12-01-21.png) -->
+![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/2024-11-06-16-52-18.png)
+<!-- ![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/2024-11-05-12-01-21.png) -->
 
 
 > [!NOTE]
@@ -86,9 +85,9 @@ https://zenn.dev/ykesamaru/articles/4e40e0285b0b66
 
 2つのベクトル \( \mathbf{a} \) と \( \mathbf{b} \) のコサイン類似度は次の式で定義されます。
 
-\[
+$$
 \cos(\theta) = \frac{\mathbf{a} \cdot \mathbf{b}}{||\mathbf{a}|| \times ||\mathbf{b}||}
-\]
+$$
 
 - \( \mathbf{a} \cdot \mathbf{b} \) は、ベクトル \( \mathbf{a} \) と \( \mathbf{b} \) の**内積**です。
 - \( ||\mathbf{a}|| \) と \( ||\mathbf{b}|| \) は、それぞれのベクトルの**ノルム**（長さ）です。
@@ -97,28 +96,28 @@ https://zenn.dev/ykesamaru/articles/4e40e0285b0b66
 ### その1: ベクトルの内積の計算
 2つのベクトル \( \mathbf{a} \) と \( \mathbf{b} \) の内積は、2つのベクトルの対応する要素を掛け合わせたものを全て足し合わせて求めます。
 
-\[
+$$
 \mathbf{a} \cdot \mathbf{b} = a_1 \times b_1 + a_2 \times b_2 + \dots + a_n \times b_n
-\]
+$$
 
 2つのベクトルが同じ方向を向いているときに大きな値が得られ、関係ない方向に向いているときには小さな値や負の値になります。
 
 ### その2: 各ベクトルのノルムを計算
 次にベクトル \( \mathbf{a} \) と \( \mathbf{b} \) のノルム（大きさ）を計算します。各ノルムは、各要素を2乗して合計した数の平方根をとることで得られます。
 
-\[
+$$
 ||\mathbf{a}|| = \sqrt{a_1^2 + a_2^2 + \dots + a_n^2}
-\]
-\[
+$$
+$$
 ||\mathbf{b}|| = \sqrt{b_1^2 + b_2^2 + \dots + b_n^2}
-\]
+$$
 
 ### その3: コサイン類似度を求める
 最後に、内積の値を2つのノルムの積で割ることで、コサイン類似度を求めます。
 
-\[
+$$
 \cos(\theta) = \frac{\mathbf{a} \cdot \mathbf{b}}{||\mathbf{a}|| \times ||\mathbf{b}||}
-\]
+$$
 
 この計算によって得られる値が、2つのベクトル間のコサイン類似度です。
 
@@ -134,9 +133,9 @@ https://zenn.dev/ykesamaru/articles/4e40e0285b0b66
 
 この手法ではコサイン類似度の平均と標準偏差を使って、異常なデータ点を「平均から一定の標準偏差の距離を超える点」とします。
 
-\[
+$$
 \text{閾値} = \text{平均} \pm k \times \text{標準偏差}
-\]
+$$
 
 \( k \)は調整パラメータで、一般的には1.5や2、あるいは3がよく使用されるようです。例えば\( k = 2 \)と設定すれば、コサイン類似度が平均から2標準偏差以上離れたデータ点を外れ値とみなします。
 
@@ -155,9 +154,9 @@ k近傍法を用いて、各データ点の近隣とのコサイン距離を評�
 
 **コサイン距離**は、コサイン類似度を距離の概念に変換したものです。一般的には以下のように定義されます。
 
-\[
+$$
 \text{コサイン距離} = 1 - \cos(\theta)
-\]
+$$
 
 コサイン距離は0から2の範囲を取り、値が小さいほどベクトル間の類似性が高い（距離が近い）ことを示します。
 
@@ -185,9 +184,9 @@ LOFとは各データ点の周囲の密度を基準にして、他の点と比�
 
 通常のLOFではユークリッド距離を使用して近傍点を決定しますが、ここではコサイン距離を用います。先述しましたがコサイン距離は、コサイン類似度を基に次のように計算されます。
 
-\[
+$$
 \text{コサイン距離} = 1 - \cos(\theta)
-\]
+$$
 
 このコサイン距離は2つのベクトルの角度の違いを反映した距離であり、2つのベクトルが近い（類似性が高い）場合は0に近く、異なる方向にあるほど1に近づきます。
 
@@ -201,26 +200,26 @@ LOFとは各データ点の周囲の密度を基準にして、他の点と比�
    - データ点Aとその近傍点Bに対して「到達可能距離」を算出。
      - 具体的には、到達可能距離は「BからAへの距離」と「Bのk近傍距離」のうち大きい方を採用します。
 
-   \[
+   $$
    \text{到達可能距離} = \max(\text{k近傍点のコサイン距離}, \text{他の点とのコサイン距離})
-   \]
+   $$
 
 3. **局所密度の計算**
    - 各データ点に対してその周囲の点の到達可能距離の逆数を取ることで局所密度を算出。
      - 局所密度が高い点は「密集したエリアにある点」、低い点は「孤立したエリアにある点」を意味します。
 
-   \[
+   $$
    \text{局所密度} = \frac{k}{\sum_{i=1}^{k} \text{到達可能距離}(i)}
-   \]
+   $$
 
 4. **LOFスコアの計算**
    - 各データ点の局所密度を周囲の点の局所密度と比較して、LOFスコアを算出します。
      - LOFスコアが1に近いほど、その点は周囲と似た密度であるため通常のデータと見なされます。
      - スコアが1より大きい場合、その点は周囲に比べて密度が低く、「外れ値」として扱われやすくなります。スコアが2や3に近づくほど、より強い外れ値と判断されます。
 
-   \[
+   $$
    \text{LOFスコア} = \frac{\text{他の近傍点の局所密度の平均}}{\text{自身の局所密度}}
-   \]
+   $$
 
 **メリット**
 - 局所的な密度を基準とするため、異なる密度を持つクラスタが存在しても外れ値をうまく検出できる。
@@ -255,19 +254,18 @@ LOFとは各データ点の周囲の密度を基準にして、他の点と比�
 
 5. 外れ値検出の具体的な判断基準と移動処理
    - **閾値設定**: 外れ値検出の閾値としてコサイン類似度が0.3未満のデータを外れ値としています。閾値はデータセットの特性に応じて調整可能です。
-   - **外れ値の保存処理**: 外れ値として判定されたファイルは、指定のディレクトリ（`外れ値ファイル`）に自動で移動されます。これにより、通常のデータと外れ値を分離して管理することが可能です。
+   - **外れ値の保存処理**: 外れ値として判定されたファイルは、指定のディレクトリ（`外れ値ファイル`）に自動で移動されます。
 
 ### `npKnown.npz`の作成
 `example/make_npKnown_file.py`を実行します。ドキュメントは[こちら](https://ykesamaru.github.io/FACE01_DEV/example.html#module-example.make_npKnown_file)です。
 
 https://github.com/yKesamaru/FACE01_DEV/blob/1cab4e4ceeeea45888d4f54f6c8da1be34e46b52/example/make_npKnown_file.py#L1-L79
 
-<figure>
-  <img src="assets/2024-11-05-17-01-09.png" alt="作成された`npKnown.npz`">
-  <figcaption>作成された`npKnown.npz`</figcaption>
-</figure><br />
+作成された`npKnown.npz
 
-![](assets/2024-11-05-17-03-08.png)
+![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/2024-11-05-17-01-09.png)
+
+![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/2024-11-05-17-03-08.png)
 
 作成された`npKnown.npz`の中身は図のようになっています。`efficientnetv2_arcface.npy`に512次元ベクトルが、`name.npy`にファイル名が、それぞれバイナリの形で格納されています。
 
@@ -280,19 +278,26 @@ https://github.com/yKesamaru/FACE01_DEV/blob/1cab4e4ceeeea45888d4f54f6c8da1be34e
 https://github.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/blob/79e96a4a9e3e267d3fb12534c65506d22b0286be/LOF_Outlier_Detection.py#L1-L143
 
 ### LOFによる外れ値ファイルの検出の結果
-![](assets/2024-11-06-16-55-06.png)
+![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/2024-11-06-16-55-06.png)
 
-
+https://github.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/blob/6990f02a9bc766275a841d08bda468da0bf0fbae/output.sh#L1-L31
 
 ### Faissによる外れ値ファイルの検出コード
 
 https://github.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/blob/79e96a4a9e3e267d3fb12534c65506d22b0286be/Faiss_Outlier_Detection.py#L1-L162
 
 ### Faissによる外れ値ファイルの検出の結果
-![](assets/2024-11-06-16-57-58.png)
+![](https://raw.githubusercontent.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/refs/heads/master/assets/2024-11-06-16-57-58.png)
 
+https://github.com/yKesamaru/Outlier-Detection-in-Cosine-Similarity-Data/blob/6990f02a9bc766275a841d08bda468da0bf0fbae/output.sh#L33-L279
 
 ## 参考リンク・文献
 
 - [Scikit-Learn Documentation](https://scikit-learn.org/stable/)
-
+- [Local Outlier Factor (LOF) による外れ値検知についてまとめた](https://hktech.hatenablog.com/entry/2018/09/04/002034)
+- [Local Outlier Factor (LOF) の算出方法、スクラッチでの実装 - Qiita](https://qiita.com/tchih11/items/b4962b82f9ccfaba937f)
+- [【外れ値,python】Local outlier Factor(LoF)の紹介【scikit-learn】](https://www.tcom242242.net/entry/ai-2/%E5%A4%96%E3%82%8C%E5%80%A4/local-outlier-factor/)
+- [コサイン類似度とは？ベクトルの内積から見る類似度 - nomulog](https://www.nomuyu.com/cos-similarity/)
+- [オブジェクト同士の類似度を測る方法。代表的な類似度計測 ...](https://wakame-msds.com/similarity/)
+- [Embeddingする方法、コサイン類似度を取る方法によって ...](https://qiita.com/fsd_maclala/items/18e6ca4b658a681fe1ff)
+- [外れ値検出 #機械学習 - Qiita](https://qiita.com/tk-tatsuro/items/a49ccab4441dc1dfc86c) 
